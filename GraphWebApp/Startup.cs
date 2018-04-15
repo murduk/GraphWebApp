@@ -42,6 +42,7 @@ namespace GraphWebApp
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<INeo4jService, Neo4jService>();
 
             services.AddMvc();
         }

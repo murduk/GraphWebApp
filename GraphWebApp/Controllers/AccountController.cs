@@ -25,17 +25,19 @@ namespace GraphWebApp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly INeo4jService _neo4JService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger, INeo4jService neo4JService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _neo4JService = neo4JService;
         }
 
         [TempData]
@@ -233,6 +235,10 @@ namespace GraphWebApp.Controllers
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
+
+                    _neo4JService.CreatePersonAndRelate(model);
+
+
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
